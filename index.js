@@ -40,4 +40,27 @@ function DNSReader() {
     });
 }
 
-DNSReader();
+function upperCaseFile() {
+    rl.question("Input Filename: ", (inputFile) => {
+        rl.question("Output filename:", (outputFile) => {
+            rl.close();
+            fs.readFile(inputFile, (err, buffer) => {
+                if (err) {
+                    console.log(err.message);
+                    return;
+                }
+                let content = buffer.toString();
+                let upCased = content.toUpperCase();
+                fs.writeFile(outputFile, upCased, (err) => {
+                    if (err) {
+                        console.log(err.message);
+                        return;
+                    }
+                    console.log("Successfully wrote the new file");
+                });
+            });
+        });
+    });
+}
+
+upperCaseFile();
