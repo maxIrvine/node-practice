@@ -2,6 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const markdownpdf = require('markdown-pdf');
 const dns = require('dns');
+const http = require('http');
 
 const rl = readline.createInterface ({
         input: process.stdin,
@@ -67,6 +68,25 @@ function webPageSave() {
     rl.question("Domain name: ", (domain) => {
         rl.question("Save to file: ", (filename) => {
             rl.close();
+            return http.get({
+                host: domain
+            }, (response) => {
+                var body = '';
+                response.on('data', (d) => {
+                    body += d;
+                });
+                response.on('end', function() {
+                    fs.writeFile(filename, body, (err) => {
+                        if (err) {
+                            console.log(err.message);
+                            return;
+                        }
+                        console.log("Successfully wrote the new file");
+                    });
+                });
+            });
         });
     });
 }
+
+webPageSave();
