@@ -3,6 +3,7 @@ const readline = require('readline');
 const markdownpdf = require('markdown-pdf');
 const dns = require('dns');
 const https = require('https');
+const rp = require('request-promise');
 
 const rl = readline.createInterface ({
         input: process.stdin,
@@ -101,4 +102,24 @@ function webPageSave() {
     });
 }
 
-webPageSave();
+function promiseWebPage() {
+    rl.question("Domain name: ", (domain) => {
+        rl.question("Save to file: ", (filename) => {
+            rl.close();
+            rp(domain)
+            .then(function (htmlString) {
+                // Process html... 
+                fs.writeFile(filename, htmlString, (err) => {
+                    if (err) {
+                        console.log(err.message);
+                        return;
+                    }
+                    console.log("Successfully wrote the new file");
+                });
+            })
+            .catch(function (err) {
+                console.log(err.message);
+            });
+        });
+    });
+}
