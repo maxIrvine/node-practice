@@ -63,4 +63,10 @@ function upperCaseFile() {
     });
 }
 
-upperCaseFile();
+function webPageSave() {
+    rl.question("Domain name: ", (domain) => {
+        rl.question("Save to file: ", (filename) => {
+            rl.close();
+        });
+    });
+}
