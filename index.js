@@ -2,7 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const markdownpdf = require('markdown-pdf');
 const dns = require('dns');
-const http = require('http');
+const https = require('https');
 
 const rl = readline.createInterface ({
         input: process.stdin,
@@ -68,15 +68,22 @@ function webPageSave() {
     rl.question("Domain name: ", (domain) => {
         rl.question("Save to file: ", (filename) => {
             rl.close();
-            return http.get({
-                host: domain
-            }, (response) => {
-                var body = '';
-                response.on('data', (d) => {
-                    body += d;
-                });
-                response.on('end', function() {
-                    fs.writeFile(filename, body, (err) => {
+
+            const options = {
+                hostname: domain,
+                port: 443,
+                path: '/',
+                method: 'GET'
+            };
+            
+            const req = https.request(options, (res) => {
+                console.log('statusCode:', res.statusCode);
+                console.log('headers:', res.headers);
+
+                res.on('data', (d) => {
+                    var text = d.toString('utf8');
+                    console.log(text);
+                    fs.writeFile(filename, text, (err) => {
                         if (err) {
                             console.log(err.message);
                             return;
@@ -85,7 +92,12 @@ function webPageSave() {
                     });
                 });
             });
-        });
+
+            req.on('error', (e) => {
+                console.error(e);
+            });
+            req.end();
+            });
     });
 }
 
