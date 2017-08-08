@@ -8,7 +8,7 @@ const rp = require('request-promise');
 const rl = readline.createInterface ({
         input: process.stdin,
         output: process.stdout
-    });
+});
 
 function fileReader() {
     rl.question("filename: ", (filename) => {
